@@ -71,7 +71,7 @@ if args['image'] <> None:
 	imageName = args['image']
 	print "Generating Resolutions for Image: " + imageName
 
-directory = ""
+directoryName = ""
 if args['directory'] <> None:
 	directoryName = args['directory']
 	print "Genrating Resolutions for Directory: " + directoryName
