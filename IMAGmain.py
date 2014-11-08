@@ -10,6 +10,7 @@ parser = argparse.ArgumentParser(description='OOMLOUT-IMAG -- Image Resolution T
 parser.add_argument('-im','--image', help='absolute name for a single image to generate resolutions for (no suffix)', required=False)
 parser.add_argument('-di','--directory', help='directory to recursivly go through to generate resolutions (ignores all jpg s with "_" in their name', required=False)
 parser.add_argument('-re','--resolutions', help='resolutions to generate, seperated by a comma output filename is original image name with _RESOLUTION added', required=False)
+parser.add_argument('-ed','--extraDirectory', help='Extra directory to add to generated files for proofing etc. (ie gen/)', required=False)
 
 args = vars(parser.parse_args())
 
@@ -24,7 +25,7 @@ args = vars(parser.parse_args())
 
 
 #
-def IMAGgenerateImageResolutions(imageName, resolutions):
+def IMAGgenerateImageResolutions(imageName, resolutions, extraDirectory):
 
 
 	#need to add .jpeg support
@@ -36,15 +37,18 @@ def IMAGgenerateImageResolutions(imageName, resolutions):
 	print "    Resolution: " + str(size[0]) + "," + str(size[1])
 	width = size[0]
 	height = size[1]
-
+	
+	basePath = os.path.dirname(imageName)
+	saveName = imageName.replace(basePath + "\\",  basePath + "\\" + extraDirectory)
+	
 	for r in resolutions:
 		ratio = float(width) / float(height)
 		print "        Generating Resolution: " + r + " ratio: " + str(ratio)
 		imageNew = image.resize((int(r), int(int(r)/ratio)), Image.ANTIALIAS)
 		quality_val = 95
-		imageNew.save(imageName + "_" + r + ".jpg", 'JPEG', quality=quality_val)
+		imageNew.save(saveName + "_" + r + ".jpg", 'JPEG', quality=quality_val)
 
-def IMAGgenerateAllImages(directoryName, resolutions):
+def IMAGgenerateAllImages(directoryName, resolutions, extraDirectory):
 	"Generating Resolutions for: " + directoryName
 	for root, _, files in os.walk(directoryName):
 		for f in files:
@@ -60,7 +64,7 @@ def IMAGgenerateAllImages(directoryName, resolutions):
 			if type.lower() in ".jpg" and not "_" in fileTest:
 				print "    Generating for File: " + f + "  type: "  + type
 				imageName = fullName.split(".")[0]
-				IMAGgenerateImageResolutions(imageName, resolutions)
+				IMAGgenerateImageResolutions(imageName, resolutions, extraDirectory)
 
 
 
@@ -86,13 +90,16 @@ print "Resolutions: "
 for b in resolutions:
 	print "    " + b
 
+extraDirectory=""
+if args['extraDirectory'] <> None:
+	extraDirectory = args['extraDirectory']
 
 
 
 if imageName <> "":
-	IMAGgenerateImageResolutions(imageName, resolutions)
+	IMAGgenerateImageResolutions(imageName, resolutions, extraDirectory)
 if directoryName <> "":
-	IMAGgenerateAllImages(directoryName, resolutions)
+	IMAGgenerateAllImages(directoryName, resolutions, extraDirectory)
 
 
 
