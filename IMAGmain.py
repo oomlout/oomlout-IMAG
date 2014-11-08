@@ -57,7 +57,7 @@ def IMAGgenerateAllImages(directoryName, resolutions):
 			fileTest = f.replace("_0", "")
 			fileTest = fileTest.replace("_T", "")
 
-			if type in ".jpg" and not "_" in fileTest:
+			if type.lower() in ".jpg" and not "_" in fileTest:
 				print "    Generating for File: " + f + "  type: "  + type
 				imageName = fullName.split(".")[0]
 				IMAGgenerateImageResolutions(imageName, resolutions)
