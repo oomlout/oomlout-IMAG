@@ -53,7 +53,10 @@ def IMAGgenerateAllImages(directoryName, resolutions, extraDirectory):
 	for root, _, files in os.walk(directoryName):
 		for f in files:
 			fullName = os.path.join(root, f)
-			type= f.split(".")[1]
+			try:
+				type= f.split(".")[1]
+			except:
+				print "no file type"
 
 			#time.sleep(1)
 
