@@ -62,7 +62,9 @@ def IMAGgenerateAllImages(directoryName, resolutions, extraDirectory):
 
 			#make +01 etc okay (fails if more than 10 images
 			fileTest = f.replace("_0", "")
-			fileTest = fileTest.replace("_T", "")
+			fileTest = fileTest.replace("_T", "") #So _Top (Top  Images still get generated
+			fileTest = f.replace("_R", "")    #So _RE (Referene Images still get generated
+			fileTest = f.replace("_B", "")	#So _Bottom (Bottom Images still get generated
 
 			if type.lower() in ".jpg" and not "_" in fileTest:
 				print "    Generating for File: " + f + "  type: "  + type
