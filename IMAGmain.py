@@ -29,7 +29,11 @@ def IMAGgenerateImageResolutions(imageName, resolutions, extraDirectory):
 
 
 	#need to add .jpeg support
-	image = Image.open(imageName + ".jpg")
+	try:
+		image = Image.open(imageName + ".jpg")
+	except:
+		image = Image.open(imageName)
+		imageName = imageName.replace(".jpg","")
 	size = image.size
 
 	print "Generating Resolutions"
@@ -37,10 +41,10 @@ def IMAGgenerateImageResolutions(imageName, resolutions, extraDirectory):
 	print "    Resolution: " + str(size[0]) + "," + str(size[1])
 	width = size[0]
 	height = size[1]
-	
+
 	basePath = os.path.dirname(imageName)
 	saveName = imageName.replace(basePath + "\\",  basePath + "\\" + extraDirectory)
-	
+
 	for r in resolutions:
 		ratio = float(width) / float(height)
 		print "        Generating Resolution: " + r + " ratio: " + str(ratio)
@@ -50,6 +54,13 @@ def IMAGgenerateImageResolutions(imageName, resolutions, extraDirectory):
 
 def IMAGgenerateAllImages(directoryName, resolutions, extraDirectory):
 	"Generating Resolutions for: " + directoryName
+	for root, _, files in os.walk(directoryName):
+		for f in files:
+			if "HEFO" in f:
+				print f + "  " +f.split(".")[1]
+
+
+
 	for root, _, files in os.walk(directoryName):
 		for f in files:
 			fullName = os.path.join(root, f)
@@ -63,10 +74,10 @@ def IMAGgenerateAllImages(directoryName, resolutions, extraDirectory):
 			#make +01 etc okay (fails if more than 10 images
 			fileTest = f.replace("_0", "")
 			fileTest = fileTest.replace("_T", "") #So _Top (Top  Images still get generated
-			fileTest = f.replace("_R", "")    #So _RE (Referene Images still get generated
-			fileTest = f.replace("_B", "")	#So _Bottom (Bottom Images still get generated
+			fileTest = fileTest.replace("_R", "")    #So _RE (Referene Images still get generated
+			fileTest = fileTest.replace("_B", "")	#So _Bottom (Bottom Images still get generated
 
-			if type.lower() in ".jpg" and not "_" in fileTest:
+			if type.lower() in "jpg" and not "_" in fileTest:
 				print "    Generating for File: " + f + "  type: "  + type
 				imageName = fullName.split(".")[0]
 				IMAGgenerateImageResolutions(imageName, resolutions, extraDirectory)
