@@ -11,6 +11,7 @@ parser.add_argument('-im','--image', help='absolute name for a single image to g
 parser.add_argument('-di','--directory', help='directory to recursivly go through to generate resolutions (ignores all jpg s with "_" in their name', required=False)
 parser.add_argument('-re','--resolutions', help='resolutions to generate, seperated by a comma output filename is original image name with _RESOLUTION added', required=False)
 parser.add_argument('-ed','--extraDirectory', help='Extra directory to add to generated files for proofing etc. (ie gen/)', required=False)
+parser.add_argument('-ow','--overwrite', help='If there files are overwritten if not only new files created.', required=False)
 
 args = vars(parser.parse_args())
 
@@ -18,7 +19,7 @@ args = vars(parser.parse_args())
 
 
 
-
+overwrite = False
 
 
 
@@ -36,9 +37,9 @@ def IMAGgenerateImageResolutions(imageName, resolutions, extraDirectory):
 		imageName = imageName.replace(".jpg","")
 	size = image.size
 
-	print "Generating Resolutions"
-	print "    Input File: " + imageName
-	print "    Resolution: " + str(size[0]) + "," + str(size[1])
+	#print "Generating Resolutions"
+	#print "    Input File: " + imageName
+	#print "    Resolution: " + str(size[0]) + "," + str(size[1])
 	width = size[0]
 	height = size[1]
 
@@ -46,20 +47,20 @@ def IMAGgenerateImageResolutions(imageName, resolutions, extraDirectory):
 	saveName = imageName.replace(basePath + "\\",  basePath + "\\" + extraDirectory)
 
 	for r in resolutions:
-		ratio = float(width) / float(height)
-		print "        Generating Resolution: " + r + " ratio: " + str(ratio)
-		imageNew = image.resize((int(r), int(int(r)/ratio)), Image.ANTIALIAS)
-		quality_val = 95
-		imageNew.save(saveName + "_" + r + ".jpg", 'JPEG', quality=quality_val)
+		
+		newImageName = saveName + "_" + r + ".jpg"
+		
+		if overwrite or not os.path.isfile(newImageName):
+			print "    Generating for File: " + imageName + "  size: "  + r
+			ratio = float(width) / float(height)
+			#print "        Generating Resolution: " + r + " ratio: " + str(ratio)
+			imageNew = image.resize((int(r), int(int(r)/ratio)), Image.ANTIALIAS)
+			quality_val = 95
+			imageNew.save(newImageName, 'JPEG', quality=quality_val)
+		
 
 def IMAGgenerateAllImages(directoryName, resolutions, extraDirectory):
 	"Generating Resolutions for: " + directoryName
-	for root, _, files in os.walk(directoryName):
-		for f in files:
-			if "HEFO" in f:
-				print f + "  " +f.split(".")[1]
-
-
 
 	for root, _, files in os.walk(directoryName):
 		for f in files:
@@ -67,7 +68,8 @@ def IMAGgenerateAllImages(directoryName, resolutions, extraDirectory):
 			try:
 				type= f.split(".")[1]
 			except:
-				print "no file type"
+				pass
+				#print "no file type"
 
 			#time.sleep(1)
 
@@ -78,7 +80,6 @@ def IMAGgenerateAllImages(directoryName, resolutions, extraDirectory):
 			fileTest = fileTest.replace("_B", "")	#So _Bottom (Bottom Images still get generated
 
 			if type.lower() in "jpg" and not "_" in fileTest:
-				print "    Generating for File: " + f + "  type: "  + type
 				imageName = fullName.split(".")[0]
 				IMAGgenerateImageResolutions(imageName, resolutions, extraDirectory)
 
@@ -109,6 +110,9 @@ for b in resolutions:
 extraDirectory=""
 if args['extraDirectory'] <> None:
 	extraDirectory = args['extraDirectory']
+overwrite = False
+if args['overwrite'] <> None:
+	overwrite = True
 
 
 
