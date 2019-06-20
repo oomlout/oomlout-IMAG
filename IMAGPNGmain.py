@@ -135,8 +135,10 @@ def IMAGPNGgenerateAllImages(directoryName, resolutions, extraDirectory):
 			fileTest = fileTest.replace("_y", "")	#So _Bottom (Bottom Images still get generated
 			fileTest = fileTest.replace("_z", "")	#So _Bottom (Bottom Images still get generated
 
-
-
+			#temp exclusions
+			
+			#fileTest = fileTest.replace("_1005", "")	#So _Bottom (Bottom Images still get generated
+			
 			if type.lower() in "png" and not "_" in fileTest:
 				imageName = fullName.split(".")[0]
 				IMAGPNGgenerateImageResolutions(imageName, resolutions, extraDirectory)
