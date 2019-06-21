@@ -56,7 +56,7 @@ def IMAGPNGgenerateImageResolutions(imageName, resolutions, extraDirectory):
 			#print "        Generating Resolution: " + r + " ratio: " + str(ratio)
 			imageNew = image.resize((int(r), int(int(r)/ratio)), Image.ANTIALIAS)
 			quality_val = 95
-			imageNew.save(newImageName, 'JPEG', quality=quality_val)
+			imageNew.save(newImageName, 'PNG', quality=quality_val)
 		
 
 def IMAGPNGgenerateAllImages(directoryName, resolutions, extraDirectory):
@@ -73,8 +73,18 @@ def IMAGPNGgenerateAllImages(directoryName, resolutions, extraDirectory):
 
 			#time.sleep(1)
 
+
+			#temp exclusions
+			
+	
+			fileTest = f
+			fileTest = fileTest.replace("_1608", "")	#metric 0603
+			fileTest = fileTest.replace("_0603", "")	#metric 0603
+			fileTest = fileTest.replace("_0402", "")	#metric 0603
+			fileTest = fileTest.replace("_1005", "")	#metric 0402
+
 			#make +01 etc okay (fails if more than 10 images
-			fileTest = f.replace("_0", "")
+			fileTest = fileTest.replace("_0", "") #So _Top (Top  Images still get generated
 			fileTest = fileTest.replace("_T", "") #So _Top (Top  Images still get generated
 			fileTest = fileTest.replace("_R", "")    #So _RE (Referene Images still get generated
 			fileTest = fileTest.replace("_B", "")	#So _Bottom (Bottom Images still get generated
@@ -134,13 +144,9 @@ def IMAGPNGgenerateAllImages(directoryName, resolutions, extraDirectory):
 			fileTest = fileTest.replace("_x", "")	#So _Bottom (Bottom Images still get generated
 			fileTest = fileTest.replace("_y", "")	#So _Bottom (Bottom Images still get generated
 			fileTest = fileTest.replace("_z", "")	#So _Bottom (Bottom Images still get generated
-
-			#temp exclusions
 			
-			#fileTest = fileTest.replace("_1005", "")	#So _Bottom (Bottom Images still get generated
-			
-			if type.lower() in "png" and not "_" in fileTest:
-				imageName = fullName.split(".")[0]
+			if ".png" in fileTest and not "_" in fileTest:
+				imageName = fullName
 				IMAGPNGgenerateImageResolutions(imageName, resolutions, extraDirectory)
 
 
